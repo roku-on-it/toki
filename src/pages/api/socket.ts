@@ -15,7 +15,12 @@ function emitPresence(io: ReturnType<typeof getSocketServer>) {
 }
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
-  const io = getSocketServer(res.socket.server);
+  if (!res.socket) {
+    res.status(500).json({ error: "Socket not available" });
+    return;
+  }
+
+  const io = getSocketServer((res.socket as any).server);
 
   if (io && !presenceInitialized) {
     presenceInitialized = true;

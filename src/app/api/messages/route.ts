@@ -47,7 +47,7 @@ export async function GET(request: NextRequest) {
   const cursorParam = searchParams.get("cursor");
   const cursor = cursorParam ? Number(cursorParam) : null;
 
-  let query = db
+  const baseQuery = db
     .select({
       id: messages.id,
       body: messages.body,
@@ -58,13 +58,14 @@ export async function GET(request: NextRequest) {
     })
     .from(messages)
     .innerJoin(users, eq(users.id, messages.userId))
-    .orderBy(desc(messages.id));
+    .$dynamic();
 
-  if (cursor) {
-    query = query.where(lt(messages.id, cursor));
-  }
-
-  const rows = await query.limit(limit + 1);
+  const rows = await (cursor
+    ? baseQuery.where(lt(messages.id, cursor))
+    : baseQuery
+  )
+    .orderBy(desc(messages.id))
+    .limit(limit + 1);
   const hasMore = rows.length > limit;
   const sliced = hasMore ? rows.slice(0, limit) : rows;
   const oldestRow = sliced[sliced.length - 1];
