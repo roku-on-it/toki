@@ -118,6 +118,7 @@ export function ChatShell({
   const [composerValue, setComposerValue] = useState("");
   const [isSending, setIsSending] = useState(false);
   const [messageError, setMessageError] = useState<string | null>(null);
+  const [typingUsers, setTypingUsers] = useState<Map<string, { displayName: string; text: string; avatarBase64: string | null }>>(new Map());
 
   const socketRef = useRef<Socket | null>(null);
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
@@ -174,6 +175,26 @@ export function ChatShell({
 
       socket.on("heart:confetti", () => {
         triggerHeartConfetti();
+      });
+
+      socket.on("typing:update", (payload: { userId: string; displayName: string; text: string; avatarBase64: string | null }) => {
+        setTypingUsers((prev) => {
+          const next = new Map(prev);
+          next.set(payload.userId, {
+            displayName: payload.displayName,
+            text: payload.text,
+            avatarBase64: payload.avatarBase64,
+          });
+          return next;
+        });
+      });
+
+      socket.on("typing:stop", (payload: { userId: string }) => {
+        setTypingUsers((prev) => {
+          const next = new Map(prev);
+          next.delete(payload.userId);
+          return next;
+        });
       });
 
       socket.on(
@@ -270,6 +291,12 @@ export function ChatShell({
     autoScrollRef.current = false;
   }, [messages.length]);
 
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+    container.scrollTo({ top: container.scrollHeight, behavior: "smooth" });
+  }, [typingUsers]);
+
   const presenceParticipants = useMemo(() => {
     const source = presenceUsers.length
       ? presenceUsers
@@ -322,11 +349,32 @@ export function ChatShell({
     }
   };
 
+  const handleComposerChange = (value: string) => {
+    setComposerValue(value);
+
+    if (value.trim()) {
+      // Emit typing update
+      socketRef.current?.emit("typing:update", {
+        userId: currentUser.id,
+        displayName: currentUser.displayName,
+        text: value,
+        avatarBase64: currentUser.avatarBase64 ?? null,
+      });
+    } else {
+      // Empty input, stop typing immediately
+      socketRef.current?.emit("typing:stop", { userId: currentUser.id });
+    }
+  };
+
   const handleSend = async () => {
     const trimmed = composerValue.trim();
     if (!trimmed || isSending) return;
     setIsSending(true);
     setMessageError(null);
+
+    // Stop typing indicator
+    socketRef.current?.emit("typing:stop", { userId: currentUser.id });
+
     try {
       const response = await fetch("/api/messages", {
         method: "POST",
@@ -451,6 +499,26 @@ export function ChatShell({
                   />
                 );
               })}
+              {Array.from(typingUsers.entries()).map(([userId, { displayName, text, avatarBase64 }]) => (
+                <div key={userId} className="flex items-start gap-3 opacity-70">
+                  <Avatar className="size-9">
+                    {avatarBase64 ? (
+                      <AvatarImage src={avatarBase64} alt={displayName} />
+                    ) : null}
+                    <AvatarFallback className="uppercase text-xs">
+                      {initialsFromName(displayName)}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="flex flex-col gap-1">
+                    <div className="flex items-baseline gap-2 text-sm">
+                      <span className="font-semibold text-foreground">{displayName}</span>
+                    </div>
+                    <p className="text-sm leading-relaxed text-foreground whitespace-pre-wrap break-words">
+                      {text}
+                    </p>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -460,7 +528,7 @@ export function ChatShell({
         ) : null}
         <Composer
           value={composerValue}
-          onChange={setComposerValue}
+          onChange={handleComposerChange}
           onSend={handleSend}
           isSending={isSending}
         />

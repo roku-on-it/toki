@@ -33,6 +33,14 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       socket.on("heart:confetti", () => {
         io.emit("heart:confetti");
       });
+
+      socket.on("typing:update", (payload: { userId: string; displayName: string; text: string; avatarBase64: string | null }) => {
+        socket.broadcast.emit("typing:update", payload);
+      });
+
+      socket.on("typing:stop", (payload: { userId: string }) => {
+        socket.broadcast.emit("typing:stop", payload);
+      });
     });
   }
 
