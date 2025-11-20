@@ -500,8 +500,8 @@ export function ChatShell({
                 );
               })}
               {Array.from(typingUsers.entries()).map(([userId, { displayName, text, avatarBase64 }]) => (
-                <div key={userId} className="flex items-start gap-3 opacity-70">
-                  <Avatar className="size-9">
+                <div key={userId} className="flex items-start gap-3 animate-in fade-in slide-in-from-bottom-2 duration-300">
+                  <Avatar className="size-9 ring-2 ring-primary/20">
                     {avatarBase64 ? (
                       <AvatarImage src={avatarBase64} alt={displayName} />
                     ) : null}
@@ -509,13 +509,17 @@ export function ChatShell({
                       {initialsFromName(displayName)}
                     </AvatarFallback>
                   </Avatar>
-                  <div className="flex flex-col gap-1">
+                  <div className="flex flex-col gap-1 flex-1">
                     <div className="flex items-baseline gap-2 text-sm">
                       <span className="font-semibold text-foreground">{displayName}</span>
+                      <span className="text-xs text-muted-foreground italic">is typing...</span>
                     </div>
-                    <p className="text-sm leading-relaxed text-foreground whitespace-pre-wrap break-words">
-                      {text}
-                    </p>
+                    <div className="rounded-2xl bg-muted/50 px-4 py-2.5 backdrop-blur-sm border border-border/50">
+                      <p className="text-sm leading-relaxed text-foreground/90 whitespace-pre-wrap break-words">
+                        {text}
+                        <span className="inline-block w-0.5 h-4 bg-primary ml-1 align-middle animate-[blink_0.8s_ease-in-out_infinite]" />
+                      </p>
+                    </div>
                   </div>
                 </div>
               ))}
