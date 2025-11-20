@@ -1,9 +1,12 @@
+import { config } from "dotenv";
 import { defineConfig } from "drizzle-kit";
 
-const dbUrl = "file:./drizzle/toki.db";
+config();
+
+const dbUrl = process.env.DATABASE_URL || "";
 
 export default defineConfig({
-  dialect: "sqlite",
+  dialect: "postgresql",
   schema: "./src/lib/db/schema.ts",
   out: "./drizzle/migrations",
   dbCredentials: {

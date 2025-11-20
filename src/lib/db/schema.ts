@@ -1,26 +1,26 @@
 import { relations } from "drizzle-orm";
 import {
-  integer,
-  sqliteTable,
+  pgTable,
+  serial,
   text,
-} from "drizzle-orm/sqlite-core";
+  timestamp,
+  uuid,
+} from "drizzle-orm/pg-core";
 
-export const users = sqliteTable("users", {
-  id: text("id")
-    .primaryKey()
-    .$defaultFn(() => crypto.randomUUID()),
+export const users = pgTable("users", {
+  id: uuid("id").defaultRandom().primaryKey(),
   displayName: text("display_name").notNull(),
   secretKey: text("secret_key").unique().notNull(),
   avatarBase64: text("avatar_base64").notNull(),
 });
 
-export const messages = sqliteTable("messages", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
+export const messages = pgTable("messages", {
+  id: serial("id").primaryKey(),
   body: text("body").notNull(),
-  sentAt: integer("sent_at", { mode: "timestamp" })
+  sentAt: timestamp("sent_at")
     .notNull()
-    .$defaultFn(() => new Date()),
-  userId: text("user_id")
+    .defaultNow(),
+  userId: uuid("user_id")
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
 });

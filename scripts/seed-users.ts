@@ -1,10 +1,13 @@
-import { createClient } from "@libsql/client";
-import { drizzle } from "drizzle-orm/libsql";
+import { config } from "dotenv";
+import { drizzle } from "drizzle-orm/postgres-js";
+import postgres from "postgres";
 
 import { users } from "@/lib/db/schema";
 
-const DATABASE_URL = "file:./drizzle/toki.db";
-const client = createClient({ url: DATABASE_URL });
+config();
+
+const DATABASE_URL = process.env.DATABASE_URL!;
+const client = postgres(DATABASE_URL, { max: 1 });
 const db = drizzle(client);
 
 const seedUsers = [
@@ -44,5 +47,5 @@ main()
     process.exit(1);
   })
   .finally(async () => {
-    await client.close();
+    await client.end();
   });

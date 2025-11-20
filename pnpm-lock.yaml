@@ -8,9 +8,6 @@ importers:
 
   .:
     dependencies:
-      '@libsql/client':
-        specifier: ^0.15.15
-        version: 0.15.15
       '@radix-ui/react-avatar':
         specifier: ^1.1.11
         version: 1.1.11(@types/react-dom@19.2.3(@types/react@19.2.6))(@types/react@19.2.6)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -44,15 +41,21 @@ importers:
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
+      dotenv:
+        specifier: ^17.2.3
+        version: 17.2.3
       drizzle-orm:
         specifier: ^0.44.7
-        version: 0.44.7(@libsql/client@0.15.15)(better-sqlite3@12.4.1)
+        version: 0.44.7(@libsql/client@0.15.15)(better-sqlite3@12.4.1)(postgres@3.4.7)
       lucide-react:
         specifier: ^0.554.0
         version: 0.554.0(react@19.2.0)
       next:
         specifier: 16.0.3
         version: 16.0.3(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      postgres:
+        specifier: ^3.4.7
+        version: 3.4.7
       react:
         specifier: 19.2.0
         version: 19.2.0
@@ -1285,6 +1288,10 @@ packages:
   detect-node-es@1.1.0:
     resolution: {integrity: sha512-ypdmJU/TbBby2Dxibuv7ZLW3Bs1QEmM7nHjEANfohJLvE0XVujisn1qPJcZxg+qDucsr+bP6fLD1rPS3AhJ7EQ==}
 
+  dotenv@17.2.3:
+    resolution: {integrity: sha512-JVUnt+DUIzu87TABbhPmNfVdBDt18BLOWjMUFJMSi/Qqg7NTYtabbvSNJGOJ7afbRuv9D/lngizHtP7QyLQ+9w==}
+    engines: {node: '>=12'}
+
   drizzle-kit@0.31.7:
     resolution: {integrity: sha512-hOzRGSdyKIU4FcTSFYGKdXEjFsncVwHZ43gY3WU5Bz9j5Iadp6Rh6hxLSQ1IWXpKLBKt/d5y1cpSPcV+FcoQ1A==}
     hasBin: true
@@ -1633,6 +1640,10 @@ packages:
   postcss@8.5.6:
     resolution: {integrity: sha512-3Ybi1tAuwAP9s0r1UQ2J4n5Y0G05bJkpUIO0/bI9MhwmD70S5aTWbXGBwxHrelT+XM1k6dM0pk+SwNkpTRN7Pg==}
     engines: {node: ^10 || ^12 || >=14}
+
+  postgres@3.4.7:
+    resolution: {integrity: sha512-Jtc2612XINuBjIl/QTWsV5UvE8UHuNblcO3vVADSrKsrc6RqGX6lOW1cEo3CM2v0XG4Nat8nI+YM7/f26VxXLw==}
+    engines: {node: '>=12'}
 
   prebuild-install@7.1.3:
     resolution: {integrity: sha512-8Mf2cbV7x1cXPUILADGI3wuhfqWvtiLA1iclTDbFRZkgRQS0NqsPZphna9V+HyTEadheuPmjaJMsbzKQFOzLug==}
@@ -2194,10 +2205,12 @@ snapshots:
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
+    optional: true
 
   '@libsql/core@0.15.15':
     dependencies:
       js-base64: 3.7.8
+    optional: true
 
   '@libsql/darwin-arm64@0.5.22':
     optional: true
@@ -2214,8 +2227,10 @@ snapshots:
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
+    optional: true
 
-  '@libsql/isomorphic-fetch@0.3.1': {}
+  '@libsql/isomorphic-fetch@0.3.1':
+    optional: true
 
   '@libsql/isomorphic-ws@0.1.5':
     dependencies:
@@ -2224,6 +2239,7 @@ snapshots:
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
+    optional: true
 
   '@libsql/linux-arm-gnueabihf@0.5.22':
     optional: true
@@ -2246,7 +2262,8 @@ snapshots:
   '@libsql/win32-x64-msvc@0.5.22':
     optional: true
 
-  '@neon-rs/load@0.0.4': {}
+  '@neon-rs/load@0.0.4':
+    optional: true
 
   '@next/env@16.0.3': {}
 
@@ -2701,6 +2718,7 @@ snapshots:
   '@types/ws@8.18.1':
     dependencies:
       '@types/node': 20.19.25
+    optional: true
 
   accepts@1.3.8:
     dependencies:
@@ -2766,7 +2784,8 @@ snapshots:
 
   csstype@3.2.3: {}
 
-  data-uri-to-buffer@4.0.1: {}
+  data-uri-to-buffer@4.0.1:
+    optional: true
 
   debug@4.3.7:
     dependencies:
@@ -2784,11 +2803,14 @@ snapshots:
   deep-extend@0.6.0:
     optional: true
 
-  detect-libc@2.0.2: {}
+  detect-libc@2.0.2:
+    optional: true
 
   detect-libc@2.1.2: {}
 
   detect-node-es@1.1.0: {}
+
+  dotenv@17.2.3: {}
 
   drizzle-kit@0.31.7:
     dependencies:
@@ -2799,10 +2821,11 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  drizzle-orm@0.44.7(@libsql/client@0.15.15)(better-sqlite3@12.4.1):
+  drizzle-orm@0.44.7(@libsql/client@0.15.15)(better-sqlite3@12.4.1)(postgres@3.4.7):
     optionalDependencies:
       '@libsql/client': 0.15.15
       better-sqlite3: 12.4.1
+      postgres: 3.4.7
 
   end-of-stream@1.4.5:
     dependencies:
@@ -2912,6 +2935,7 @@ snapshots:
     dependencies:
       node-domexception: 1.0.0
       web-streams-polyfill: 3.3.3
+    optional: true
 
   file-uri-to-path@1.0.0:
     optional: true
@@ -2919,6 +2943,7 @@ snapshots:
   formdata-polyfill@4.0.10:
     dependencies:
       fetch-blob: 3.2.0
+    optional: true
 
   fs-constants@1.0.0:
     optional: true
@@ -2948,7 +2973,8 @@ snapshots:
 
   jiti@2.6.1: {}
 
-  js-base64@3.7.8: {}
+  js-base64@3.7.8:
+    optional: true
 
   libsql@0.5.22:
     dependencies:
@@ -2964,6 +2990,7 @@ snapshots:
       '@libsql/linux-x64-gnu': 0.5.22
       '@libsql/linux-x64-musl': 0.5.22
       '@libsql/win32-x64-msvc': 0.5.22
+    optional: true
 
   lightningcss-android-arm64@1.30.2:
     optional: true
@@ -3074,13 +3101,15 @@ snapshots:
       semver: 7.7.3
     optional: true
 
-  node-domexception@1.0.0: {}
+  node-domexception@1.0.0:
+    optional: true
 
   node-fetch@3.3.2:
     dependencies:
       data-uri-to-buffer: 4.0.1
       fetch-blob: 3.2.0
       formdata-polyfill: 4.0.10
+    optional: true
 
   object-assign@4.1.1: {}
 
@@ -3103,6 +3132,8 @@ snapshots:
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
+  postgres@3.4.7: {}
+
   prebuild-install@7.1.3:
     dependencies:
       detect-libc: 2.1.2
@@ -3119,7 +3150,8 @@ snapshots:
       tunnel-agent: 0.6.0
     optional: true
 
-  promise-limit@2.7.0: {}
+  promise-limit@2.7.0:
+    optional: true
 
   pump@3.0.3:
     dependencies:
@@ -3358,14 +3390,16 @@ snapshots:
 
   vary@1.1.2: {}
 
-  web-streams-polyfill@3.3.3: {}
+  web-streams-polyfill@3.3.3:
+    optional: true
 
   wrappy@1.0.2:
     optional: true
 
   ws@8.17.1: {}
 
-  ws@8.18.3: {}
+  ws@8.18.3:
+    optional: true
 
   xmlhttprequest-ssl@2.1.2: {}
 

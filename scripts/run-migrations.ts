@@ -1,9 +1,12 @@
-import { createClient } from "@libsql/client";
-import { drizzle } from "drizzle-orm/libsql";
-import { migrate } from "drizzle-orm/libsql/migrator";
+import { config } from "dotenv";
+import { drizzle } from "drizzle-orm/postgres-js";
+import { migrate } from "drizzle-orm/postgres-js/migrator";
+import postgres from "postgres";
 
-const DATABASE_URL = "file:./drizzle/toki.db";
-const client = createClient({ url: DATABASE_URL });
+config();
+
+const DATABASE_URL = process.env.DATABASE_URL!;
+const client = postgres(DATABASE_URL, { max: 1 });
 const db = drizzle(client);
 
 async function main() {
@@ -17,5 +20,5 @@ main()
     process.exit(1);
   })
   .finally(async () => {
-    await client.close();
+    await client.end();
   });
